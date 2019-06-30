@@ -27,8 +27,8 @@ class WebSecurityConfig {
     fun securitygWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http
                 .exceptionHandling()
-                .authenticationEntryPoint { swe, e -> Mono.fromRunnable { swe.response.statusCode = HttpStatus.UNAUTHORIZED } }
-                .accessDeniedHandler { swe, e -> Mono.fromRunnable { swe.response.statusCode = HttpStatus.FORBIDDEN } }.and()
+                .authenticationEntryPoint { swe, _ -> Mono.fromRunnable { swe.response.statusCode = HttpStatus.UNAUTHORIZED } }
+                .accessDeniedHandler { swe, _ -> Mono.fromRunnable { swe.response.statusCode = HttpStatus.FORBIDDEN } }.and()
                 .csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
@@ -37,6 +37,7 @@ class WebSecurityConfig {
                 .authorizeExchange()
                 .pathMatchers(HttpMethod.OPTIONS).permitAll()
                 .pathMatchers("/login").permitAll()
+                .pathMatchers("/actuator/**").permitAll()
                 .pathMatchers("/api/public/**").permitAll()
                 .anyExchange().authenticated()
                 .and()
